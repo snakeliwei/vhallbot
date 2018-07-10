@@ -11,6 +11,9 @@ from sanic import Sanic
 from sanic_cors import CORS
 from sanic.response import json
 from aoiklivereload import LiveReloader
+from config import huey
+from task import addjob
+import csv
 
 
 # How is Support hot reload in Sanic?
@@ -44,8 +47,13 @@ async def users(request):
 
 @app.route("/join", methods=['POST'])
 async def join(request):
-    
+    url=request.json['url']
+    users=request.json['users']
+    try:
+        addjob(url, users)
+    except Exception as err:
+        print(err)
     return json({ "received": True, "message": request.json })
 
 
-app.run(host='0.0.0.0', port=8000, debug=True)
+app.run(host='0.0.0.0', port=8888, debug=True)
